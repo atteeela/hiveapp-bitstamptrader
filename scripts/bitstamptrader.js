@@ -43,6 +43,15 @@ function format_number( number, format ){
   return result;
 }
 
+function format_usd(number) {
+  number = bitcoin.satoshiFromUserString("1") / bitcoin.BTC_IN_SATOSHI * number
+  return format_number(number, '$0,0.00')
+}
+
+function format_btc(number) {
+  return bitcoin.userStringForSatoshi(bitcoin.BTC_IN_SATOSHI * number)
+}
+
 function listUnconfirmedBitcoinTransactions() {
   params = bitstamp.submitRequest(bitstamp.methods.unconfirmedbtc, function(response){
     $('#pending_transfers option').each(function(index, option) {
@@ -279,12 +288,12 @@ function refreshBalance(callback) {
       $('.data_client_id').text(bitstamp.auth.client_id.toString());
       $('.data_user_fee').text(format_number(response.data.fee / 100, '0.00%'));
 
-      $('.data_balance_btc').text(format_number(response.data.btc_balance, '0,0.000000'));
-      $('.data_available_btc').text(format_number(response.data.btc_available, '0,0.000000'));
-      $('.data_reserved_btc').text(format_number(response.data.btc_reserved, '0,0.000000'));
-      $('.data_balance_usd').text(format_number(response.data.usd_balance, '0,0.00'));
-      $('.data_available_usd').text(format_number(response.data.usd_available, '0,0.00'));
-      $('.data_reserved_usd').text(format_number(response.data.usd_reserved, '0,0.00'));
+      $('.data_balance_btc').text(format_btc(response.data.btc_balance));
+      $('.data_available_btc').text(format_btc(response.data.btc_available));
+      $('.data_reserved_btc').text(format_btc(response.data.btc_reserved));
+      $('.data_balance_usd').text(format_usd(response.data.usd_balance));
+      $('.data_available_usd').text(format_usd(response.data.usd_available));
+      $('.data_reserved_usd').text(format_usd(response.data.usd_reserved));
 
       callback(response);
   });
@@ -343,14 +352,12 @@ function checkLogin() {
 function getTicker(response) {
   params = bitstamp.submitRequest(bitstamp.methods.ticker, function(response){
     if ('data' in response) {
-      //$('#trade_price').val(format_number(response.data.last, '0.00'));
-
-      $('.data_ticker_last').text(format_number(response.data.last, '$0,0.00'));
-      $('.data_ticker_high').text(format_number(response.data.high, '$0,0.00'));
-      $('.data_ticker_low').text(format_number(response.data.low, '$0,0.00'));
-      $('.data_ticker_volume').text(format_number(response.data.volume, '0,0.000000'));
-      $('.data_ticker_bid').text(format_number(response.data.bid, '$0,0.00'));
-      $('.data_ticker_ask').text(format_number(response.data.ask, '$0,0.00'));
+      $('.data_ticker_last').text(format_usd(response.data.last));
+      $('.data_ticker_high').text(format_usd(response.data.high));
+      $('.data_ticker_low').text(format_usd(response.data.low));
+      $('.data_ticker_volume').text(format_btc(response.data.volume));
+      $('.data_ticker_bid').text(format_usd(response.data.bid));
+      $('.data_ticker_ask').text(format_usd(response.data.ask));
     } else {
       alert(response.error || 'Unknown error');
     }
