@@ -1,6 +1,6 @@
 # hiveapp-bitstamptrader
 
-A Hive Wallet application for interacting with Bitstamp API. This application has only been lightly tested. Basic functionality works, however there may be outstanding non-fatal bugs. [Download latest release](https://github.com/tgerring/hiveapp-bitstamptrader/releases/latest) or see **Developers** below to use source.
+A Hive Wallet application for interacting with Bitstamp API. This application has only been lightly tested. Basic functionality works, however there may be outstanding non-fatal bugs. [Download latest release](https://github.com/hivewallet/hiveapp-bitstamptrader/releases/latest) or see **Developers** below to use source.
 
 ![Bitstamp orders](http://i.imgur.com/JSaKdzJ.png)
 
