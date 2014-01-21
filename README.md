@@ -21,7 +21,7 @@ A Hive Wallet application for interacting with Bitstamp API. This application ha
 
 ## Developers
 ```
-cd ~ && git clone https://github.com/tgerring/hiveapp-bitstamptrader.git
+cd ~ && git clone https://github.com/hivewallet/hiveapp-bitstamptrader.git
 cd ~/Library/Application\ Support/Hive/Applications/
 ln -s ~/hiveapp-bitstamptrader/ bitstamptrader
 ```
