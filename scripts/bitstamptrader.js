@@ -2,6 +2,13 @@ var bitstamp = new Bitstamp();
 var refreshsecs = 15;
 var systemInfo = {};
 
+// Override for Hive-specific call due to lack of CORS
+bitstamp.requestFunction = function(xhrParams) {
+  var url = xhrParams.url;
+  delete xhrParams.url;
+  bitcoin.makeRequest(url, xhrParams);
+}
+
 numeral.language('hive-eu', {
     delimiters: {
         thousands: ' ',
@@ -134,12 +141,12 @@ function bitcoinWithdrawl(amount) {
 
 function orderBuy(amount, price) {
   $('#orderbuy').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, completeTrade, {'amount': amount, 'price': price });
+  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, {'amount': amount, 'price': price }, completeTrade);
 }
 
 function orderSell(amount, price) {
   $('#ordersell').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.ordersell, completeTrade, {'amount': amount, 'price': price });
+  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {'amount': amount, 'price': price }, completeTrade);
 }
 
 function completeTrade(response) {
