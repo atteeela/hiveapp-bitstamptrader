@@ -52,6 +52,11 @@ function format_btc(number) {
   return bitcoin.userStringForSatoshi(bitcoin.BTC_IN_SATOSHI * number)
 }
 
+function format_volume(number) {
+  var str = format_btc(number)
+  return str.substring(0, str.indexOf(systemInfo.decimalSeparator))
+}
+
 function listUnconfirmedBitcoinTransactions() {
   params = bitstamp.submitRequest(bitstamp.methods.unconfirmedbtc, function(response){
     $('#pending_transfers option').each(function(index, option) {
@@ -355,9 +360,10 @@ function getTicker(response) {
       $('.data_ticker_last').text(format_usd(response.data.last));
       $('.data_ticker_high').text(format_usd(response.data.high));
       $('.data_ticker_low').text(format_usd(response.data.low));
-      $('.data_ticker_volume').text(format_btc(response.data.volume));
-      $('.data_ticker_bid').text(format_usd(response.data.bid));
-      $('.data_ticker_ask').text(format_usd(response.data.ask));
+      $('.data_ticker_volume').text(format_volume(response.data.volume));
+      $('.data_ticker_unit').text(systemInfo.preferredBitcoinFormat);
+      // $('.data_ticker_bid').text(format_usd(response.data.bid));
+      // $('.data_ticker_ask').text(format_usd(response.data.ask));
     } else {
       alert(response.error || 'Unknown error');
     }

@@ -36,6 +36,7 @@
               <th>High</th>
               <th>Low</th>
               <th>Volume</th>
+              <th>Unit</th>
             </tr>
             <tr>
               <td><span class="data_ticker_last"></span></td>
@@ -44,17 +45,18 @@
               <td><span class="data_ticker_high"></span> </td>
               <td><span class="data_ticker_low"></span></td>
               <td><span class="data_ticker_volume nowrap"></span></td>
+              <td><span class="data_ticker_unit nowrap"></span></td>
             </tr>
           </tbody>
         </table>
-        
+
         <!-- Unimplemented functionality
         <button id="toggle_orderbook" type="button">Show order book</button>
         <button id="transactions" type="button">Transactions</button>
         <button id="eurusd" type="button">EUR/USD Conversion Rate</button>-->
 
       </div> <!-- /panel_public -->
- 
+
       <div id="panel_login">
         <form id="login_form" role="form">
           <div class="form-group">
@@ -178,7 +180,7 @@
     $(document).ready(function() {
 
       // Initialization
-      bitcoin.getSystemInfo(function(info) {systemInfo = info;}); 
+      bitcoin.getSystemInfo(function(info) {systemInfo = info;});
       $('#panel_login').show();
       $('#loginmessage').hide();
       $('#panel_trade').hide();
@@ -187,7 +189,7 @@
       window.setInterval(function(){
         getTicker();
       }, refreshsecs * 1000);
-      checkLogin();      
+      checkLogin();
       /// Initialization
 
       // Event bindings
