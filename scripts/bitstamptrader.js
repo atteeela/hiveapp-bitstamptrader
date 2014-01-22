@@ -183,7 +183,8 @@ function getBitcoinDepositAddress() {
   params = bitstamp.submitRequest(bitstamp.methods.btcdepositaddress, function(response){
     $('#btcdeposit').prop('disabled', false);
     if ('data' in response) {
-      bitcoin.sendMoney(response.data, $('#transferamount').val() * 100000000, function(success, transactionId){
+      var satoshiValue = bitcoin.satoshiFromUserString($('#transferamount').val())
+      bitcoin.sendMoney(response.data, satoshiValue, function(success, transactionId){
         if (success === true) {
           listUnconfirmedBitcoinTransactions(); // this is unlikely to show anything
         }
