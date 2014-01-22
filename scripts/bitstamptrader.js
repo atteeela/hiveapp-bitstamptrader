@@ -153,14 +153,18 @@ function bitcoinWithdrawl(amount) {
   }, {'amount': amount, 'address': user_address});
 }
 
+function btcAmountFromInput(amount) {
+  return bitcoin.satoshiFromUserString(amount) / bitcoin.BTC_IN_SATOSHI
+}
+
 function orderBuy(amount, price) {
   $('#orderbuy').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, {'amount': amount, 'price': price }, completeTrade);
+  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, {'amount': btcAmountFromInput(amount), 'price': price }, completeTrade);
 }
 
 function orderSell(amount, price) {
   $('#ordersell').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {'amount': amount, 'price': price }, completeTrade);
+  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {'amount': btcAmountFromInput(amount), 'price': price }, completeTrade);
 }
 
 function completeTrade(response) {
@@ -252,7 +256,7 @@ function refreshOpenOrders() {
         } else if (value.type == 1) {
           typedesc = 'Sell ';
         }
-        msg = typedesc + value.amount.toString() + ' at ' + value.price.toString();
+        msg = typedesc + format_btc(value.amount) + ' ' + systemInfo.preferredBitcoinFormat + ' at ' + value.price + ' USD';
         $('#user_openorders').append('<option value="' + value.id + '">' + msg + '</option>');
       });
 
