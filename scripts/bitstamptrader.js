@@ -150,7 +150,7 @@ function bitcoinWithdrawl(amount) {
     } else {
       alert(response.error || 'Unknown error');
     }
-  }, {'amount': amount, 'address': user_address});
+  }, {'amount': btcAmountFromInput(amount), 'address': user_address});
 }
 
 function btcAmountFromInput(amount) {
