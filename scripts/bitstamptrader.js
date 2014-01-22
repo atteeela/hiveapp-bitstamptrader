@@ -296,6 +296,8 @@ function refreshBalance(callback) {
       $('.data_balance_btc').text(format_btc(response.data.btc_balance));
       $('.data_available_btc').text(format_btc(response.data.btc_available));
       $('.data_reserved_btc').text(format_btc(response.data.btc_reserved));
+      $('.unit').text(systemInfo.preferredBitcoinFormat);
+
       $('.data_balance_usd').text(format_usd(response.data.usd_balance));
       $('.data_available_usd').text(format_usd(response.data.usd_available));
       $('.data_reserved_usd').text(format_usd(response.data.usd_reserved));

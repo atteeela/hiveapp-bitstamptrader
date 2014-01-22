@@ -83,8 +83,10 @@
       <div id="panel_trade">
 
         <p>
-          Fee: <span class="data_user_fee"></span>
-          <i class="fa fa-btc fa-fw"></i><span class="data_available_btc"></span> /<i class="fa fa-usd fa-fw"></i><span class="data_available_usd"></span>
+          &nbsp;
+          <strong><span class="data_available_btc"></span></strong> <span class="unit"></span> |
+          <strong><span class="data_available_usd"></span></strong> <span class="currency-unit">USD</span> |
+          <span class="data_user_fee"></span> <span>Fee</span>
           <span class="pull-right">
             <button id="button_refreshall" type="button" class="btn btn-default btn-xs"><i class="fa fa-refresh fa-fw"></i><span class="sr-only">Reload app</span></button>
             <button id="button_collapse" type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#panel_account_details"><i class="fa fa-caret-down fa-fw"></i><span class="sr-only">Toggle account details</span></button>
@@ -101,12 +103,19 @@
               </td>
             </tr>
             <tr>
-              <th>BTC Balance:</th>
-              <td><i class="fa fa-btc fa-fw"></i><span class="data_balance_btc"></span> <span class="nowrap">(<span class="data_reserved_btc"></span> reserved)</span></td>
+              <th>Bitcoin Balance:</th>
+              <td>
+                <span class="unit"></span>
+                <span class="data_balance_btc"></span>
+                <span class="nowrap">(<span class="data_reserved_btc"></span> reserved)</span>
+              </td>
             </tr>
             <tr>
               <th>USD Balance:</th>
-              <td><i class="fa fa-usd fa-fw"></i><span class="data_balance_usd"></span> <span class="nowrap">(<span class="data_reserved_usd"></span> reserved)</span></td>
+              <td>
+                <span class="data_balance_usd"></span>
+                <span class="nowrap">(<span class="data_reserved_usd"></span> reserved)</span>
+              </td>
             </tr>
           </tbody>
         </table>
