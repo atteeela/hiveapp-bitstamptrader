@@ -43,6 +43,23 @@ function format_number( number, format ){
   return result;
 }
 
+function format_usd_respect_user_denomination(number) {
+  number = bitcoin.satoshiFromUserString("1") / bitcoin.BTC_IN_SATOSHI * number
+  return format_usd(number)
+}
+
+function format_usd(number) {
+  return format_number(number, '$0,0.00')
+}
+
+function format_btc_respect_user_denomination(number) {
+  return bitcoin.userStringForSatoshi(bitcoin.BTC_IN_SATOSHI * number)
+}
+
+function format_volume(number) {
+  return format_number(number, '0,0')
+}
+
 function listUnconfirmedBitcoinTransactions() {
   params = bitstamp.submitRequest(bitstamp.methods.unconfirmedbtc, function(response){
     $('#pending_transfers option').each(function(index, option) {
@@ -136,17 +153,21 @@ function bitcoinWithdrawl(amount) {
     } else {
       alert(response.error || 'Unknown error');
     }
-  }, {'amount': amount, 'address': user_address});
+  }, {'amount': btcAmountFromInput(amount), 'address': user_address});
+}
+
+function btcAmountFromInput(amount) {
+  return bitcoin.satoshiFromUserString(amount) / bitcoin.BTC_IN_SATOSHI
 }
 
 function orderBuy(amount, price) {
   $('#orderbuy').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, {'amount': amount, 'price': price }, completeTrade);
+  params = bitstamp.submitRequest(bitstamp.methods.orderbuy, {'amount': btcAmountFromInput(amount), 'price': price }, completeTrade);
 }
 
 function orderSell(amount, price) {
   $('#ordersell').prop('disabled', true);
-  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {'amount': amount, 'price': price }, completeTrade);
+  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {'amount': btcAmountFromInput(amount), 'price': price }, completeTrade);
 }
 
 function completeTrade(response) {
@@ -169,7 +190,8 @@ function getBitcoinDepositAddress() {
   params = bitstamp.submitRequest(bitstamp.methods.btcdepositaddress, function(response){
     $('#btcdeposit').prop('disabled', false);
     if ('data' in response) {
-      bitcoin.sendMoney(response.data, $('#transferamount').val() * 100000000, function(success, transactionId){
+      var satoshiValue = bitcoin.satoshiFromUserString($('#transferamount').val())
+      bitcoin.sendMoney(response.data, satoshiValue, function(success, transactionId){
         if (success === true) {
           listUnconfirmedBitcoinTransactions(); // this is unlikely to show anything
         }
@@ -237,7 +259,7 @@ function refreshOpenOrders() {
         } else if (value.type == 1) {
           typedesc = 'Sell ';
         }
-        msg = typedesc + value.amount.toString() + ' at ' + value.price.toString();
+        msg = typedesc + format_btc_respect_user_denomination(value.amount) + ' ' + systemInfo.preferredBitcoinFormat + ' at ' + value.price + ' USD';
         $('#user_openorders').append('<option value="' + value.id + '">' + msg + '</option>');
       });
 
@@ -279,12 +301,14 @@ function refreshBalance(callback) {
       $('.data_client_id').text(bitstamp.auth.client_id.toString());
       $('.data_user_fee').text(format_number(response.data.fee / 100, '0.00%'));
 
-      $('.data_balance_btc').text(format_number(response.data.btc_balance, '0,0.000000'));
-      $('.data_available_btc').text(format_number(response.data.btc_available, '0,0.000000'));
-      $('.data_reserved_btc').text(format_number(response.data.btc_reserved, '0,0.000000'));
-      $('.data_balance_usd').text(format_number(response.data.usd_balance, '0,0.00'));
-      $('.data_available_usd').text(format_number(response.data.usd_available, '0,0.00'));
-      $('.data_reserved_usd').text(format_number(response.data.usd_reserved, '0,0.00'));
+      $('.data_balance_btc').text(format_btc_respect_user_denomination(response.data.btc_balance));
+      $('.data_available_btc').text(format_btc_respect_user_denomination(response.data.btc_available));
+      $('.data_reserved_btc').text(format_btc_respect_user_denomination(response.data.btc_reserved));
+      $('.unit').text(systemInfo.preferredBitcoinFormat);
+
+      $('.data_balance_usd').text(format_usd_respect_user_denomination(response.data.usd_balance));
+      $('.data_available_usd').text(format_usd_respect_user_denomination(response.data.usd_available));
+      $('.data_reserved_usd').text(format_usd_respect_user_denomination(response.data.usd_reserved));
 
       callback(response);
   });
@@ -343,14 +367,12 @@ function checkLogin() {
 function getTicker(response) {
   params = bitstamp.submitRequest(bitstamp.methods.ticker, function(response){
     if ('data' in response) {
-      //$('#trade_price').val(format_number(response.data.last, '0.00'));
-
-      $('.data_ticker_last').text(format_number(response.data.last, '$0,0.00'));
-      $('.data_ticker_high').text(format_number(response.data.high, '$0,0.00'));
-      $('.data_ticker_low').text(format_number(response.data.low, '$0,0.00'));
-      $('.data_ticker_volume').text(format_number(response.data.volume, '0,0.000000'));
-      $('.data_ticker_bid').text(format_number(response.data.bid, '$0,0.00'));
-      $('.data_ticker_ask').text(format_number(response.data.ask, '$0,0.00'));
+      $('.data_ticker_last').text(format_usd(response.data.last));
+      $('.data_ticker_high').text(format_usd(response.data.high));
+      $('.data_ticker_low').text(format_usd(response.data.low));
+      $('.data_ticker_volume').text(format_volume(response.data.volume));
+      // $('.data_ticker_bid').text(format_usd(response.data.bid));
+      // $('.data_ticker_ask').text(format_usd(response.data.ask));
     } else {
       alert(response.error || 'Unknown error');
     }
