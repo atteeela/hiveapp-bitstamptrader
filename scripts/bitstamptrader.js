@@ -43,18 +43,21 @@ function format_number( number, format ){
   return result;
 }
 
-function format_usd(number) {
+function format_usd_respect_user_denomination(number) {
   number = bitcoin.satoshiFromUserString("1") / bitcoin.BTC_IN_SATOSHI * number
+  return format_usd(number)
+}
+
+function format_usd(number) {
   return format_number(number, '$0,0.00')
 }
 
-function format_btc(number) {
+function format_btc_respect_user_denomination(number) {
   return bitcoin.userStringForSatoshi(bitcoin.BTC_IN_SATOSHI * number)
 }
 
 function format_volume(number) {
-  var str = format_btc(number)
-  return str.substring(0, str.indexOf(systemInfo.decimalSeparator))
+  return format_number(number, '0,0')
 }
 
 function listUnconfirmedBitcoinTransactions() {
@@ -256,7 +259,7 @@ function refreshOpenOrders() {
         } else if (value.type == 1) {
           typedesc = 'Sell ';
         }
-        msg = typedesc + format_btc(value.amount) + ' ' + systemInfo.preferredBitcoinFormat + ' at ' + value.price + ' USD';
+        msg = typedesc + format_btc_respect_user_denomination(value.amount) + ' ' + systemInfo.preferredBitcoinFormat + ' at ' + value.price + ' USD';
         $('#user_openorders').append('<option value="' + value.id + '">' + msg + '</option>');
       });
 
@@ -298,14 +301,14 @@ function refreshBalance(callback) {
       $('.data_client_id').text(bitstamp.auth.client_id.toString());
       $('.data_user_fee').text(format_number(response.data.fee / 100, '0.00%'));
 
-      $('.data_balance_btc').text(format_btc(response.data.btc_balance));
-      $('.data_available_btc').text(format_btc(response.data.btc_available));
-      $('.data_reserved_btc').text(format_btc(response.data.btc_reserved));
+      $('.data_balance_btc').text(format_btc_respect_user_denomination(response.data.btc_balance));
+      $('.data_available_btc').text(format_btc_respect_user_denomination(response.data.btc_available));
+      $('.data_reserved_btc').text(format_btc_respect_user_denomination(response.data.btc_reserved));
       $('.unit').text(systemInfo.preferredBitcoinFormat);
 
-      $('.data_balance_usd').text(format_usd(response.data.usd_balance));
-      $('.data_available_usd').text(format_usd(response.data.usd_available));
-      $('.data_reserved_usd').text(format_usd(response.data.usd_reserved));
+      $('.data_balance_usd').text(format_usd_respect_user_denomination(response.data.usd_balance));
+      $('.data_available_usd').text(format_usd_respect_user_denomination(response.data.usd_available));
+      $('.data_reserved_usd').text(format_usd_respect_user_denomination(response.data.usd_reserved));
 
       callback(response);
   });
@@ -368,7 +371,6 @@ function getTicker(response) {
       $('.data_ticker_high').text(format_usd(response.data.high));
       $('.data_ticker_low').text(format_usd(response.data.low));
       $('.data_ticker_volume').text(format_volume(response.data.volume));
-      $('.data_ticker_unit').text(systemInfo.preferredBitcoinFormat);
       // $('.data_ticker_bid').text(format_usd(response.data.bid));
       // $('.data_ticker_ask').text(format_usd(response.data.ask));
     } else {
