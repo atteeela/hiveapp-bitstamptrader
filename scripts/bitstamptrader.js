@@ -146,10 +146,11 @@ function bitcoinWithdrawl(amount) {
   params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, function(response){
     $('#btcwithdrawal').prop('disabled', false);
     if ('data' in response) {
+      hideError()
       refreshUserTransactions();
       listPendingWithdrawalRequests();
     } else {
-      alert(response.error || 'Unknown error');
+      displayError(response.error)
     }
   }, {'amount': btcAmountFromInput(amount), 'address': user_address});
 }
@@ -173,13 +174,14 @@ function completeTrade(response) {
   $('#ordersell').prop('disabled', false);
 
   if ('data' in response) {
+    hideError()
     $('#trade_amount').val('');
     $('#trade_price').val('');
     refreshOpenOrders();
     refreshBalance();
     //refreshUserTransactions();
   } else {
-    alert(response.error || 'Unknown error');
+    displayError(response.error)
   }
 }
 
@@ -188,6 +190,7 @@ function getBitcoinDepositAddress() {
   params = bitstamp.submitRequest(bitstamp.methods.btcdepositaddress, function(response){
     $('#btcdeposit').prop('disabled', false);
     if ('data' in response) {
+      hideError()
       var satoshiValue = bitcoin.satoshiFromUserString($('#transferamount').val())
       bitcoin.sendMoney(response.data, satoshiValue, function(success, transactionId){
         if (success === true) {
@@ -195,9 +198,7 @@ function getBitcoinDepositAddress() {
         }
       });
     } else {
-      var errormsg = (response.error || 'Unknown error');
-      //$('#transfers_message').html('Deposit not enabled: ' + errormsg);
-      alert(errormsg);
+      displayError(response.error)
     }
   });
 }
@@ -282,11 +283,12 @@ function cancelOrders() {
       params = bitstamp.submitRequest(bitstamp.methods.cancelorder, function(response) {
         console.log(response);
         if ('data' in response) {
+          hideError()
           refreshOpenOrders();
           refreshBalance();
           //refreshUserTransactions();
         } else {
-          alert(response.error || 'Unknown error');
+          displayError(response.error)
         }
       }, {id: option.value});
 
@@ -318,6 +320,7 @@ function doLogin(clientid, apikey, apisecret) {
   refreshBalance(function(response) {
     $('#loginmessage').hide();
     if ('data' in response) {
+      hideError()
       storeLoginDetails(bitstamp);
       $('#panel_login').hide();
       $('#panel_trade').show();
@@ -326,7 +329,7 @@ function doLogin(clientid, apikey, apisecret) {
       window.setTimeout(listPendingWithdrawalRequests, 200);
       window.setTimeout(listUnconfirmedBitcoinTransactions, 400);
     } else {
-      alert(response.error || 'Unknown error');
+      displayError(response.error)
       $('#panel_login').show();
       $('#panel_trade').hide();
     }
@@ -365,6 +368,7 @@ function checkLogin() {
 function getTicker(response) {
   params = bitstamp.submitRequest(bitstamp.methods.ticker, function(response){
     if ('data' in response) {
+      hideError()
       $('.data_ticker_last').text(format_usd(response.data.last));
       $('.data_ticker_high').text(format_usd(response.data.high));
       $('.data_ticker_low').text(format_usd(response.data.low));
@@ -372,7 +376,17 @@ function getTicker(response) {
       // $('.data_ticker_bid').text(format_usd(response.data.bid));
       // $('.data_ticker_ask').text(format_usd(response.data.ask));
     } else {
-      alert(response.error || 'Unknown error');
+      displayError(response.error)
     }
   });
+}
+
+function displayError(error){
+  $('.alert').text(error || "Unknown error")
+  $('.alert').show()
+}
+
+function hideError(){
+  $('.alert').text('')
+  $('.alert').hide()
 }
