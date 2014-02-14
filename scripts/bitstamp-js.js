@@ -115,7 +115,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
     hmac.update(message);
     var hash = hmac.finalize();
     signature = hash.toString().toUpperCase();
-    
+
     params.key = this.auth.api_key;
     params.signature = signature;
     params.nonce = unix_timestamp_ms;
@@ -148,7 +148,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
 Bitstamp.prototype.requestFunction = function(xhrParams) {
   console.log('requestFunction with params:');
   console.log(xhrParams);
-  
+
   $.ajax(xhrParams);
 }
 

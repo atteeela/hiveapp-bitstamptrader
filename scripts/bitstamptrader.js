@@ -1,13 +1,12 @@
 var bitstamp = new Bitstamp();
-var refreshsecs = 15;
-var systemInfo = {};
-
 // Override for Hive-specific call due to lack of CORS
-bitstamp.requestFunction = function(xhrParams) {
+Object.getPrototypeOf(bitstamp).requestFunction = function(xhrParams) {
   var url = xhrParams.url;
   delete xhrParams.url;
   bitcoin.makeRequest(url, xhrParams);
 }
+var refreshsecs = 15;
+var systemInfo = {};
 
 numeral.language('hive-eu', {
     delimiters: {
@@ -27,7 +26,6 @@ numeral.language('hive-eu', {
         symbol: '$'
     }
 });
-
 
 function format_number( number, format ){
   if (systemInfo.decimalSeparator === ',') {
