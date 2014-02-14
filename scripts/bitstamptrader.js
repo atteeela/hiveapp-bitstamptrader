@@ -143,16 +143,14 @@ function bitcoinWithdrawl(amount) {
   bitcoin.getUserInfo(function(info){
     user_address = info.address;
   });
-  params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, function(response){
+  var additionalParams = {'amount': btcAmountFromInput(amount), 'address': user_address}
+  params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, additionalParams, function(response){
     $('#btcwithdrawal').prop('disabled', false);
-    if ('data' in response) {
-      hideError()
+    handleResponse(response, function(response){
       refreshUserTransactions();
       listPendingWithdrawalRequests();
-    } else {
-      displayError(response.error)
-    }
-  }, {'amount': btcAmountFromInput(amount), 'address': user_address});
+    })
+  });
 }
 
 function btcAmountFromInput(amount) {
@@ -173,33 +171,27 @@ function completeTrade(response) {
   $('#orderbuy').prop('disabled', false);
   $('#ordersell').prop('disabled', false);
 
-  if ('data' in response) {
-    hideError()
+  handleResponse(response, function(response){
     $('#trade_amount').val('');
     $('#trade_price').val('');
     refreshOpenOrders();
     refreshBalance();
     //refreshUserTransactions();
-  } else {
-    displayError(response.error)
-  }
+  })
 }
 
 function getBitcoinDepositAddress() {
   $('#btcdeposit').prop('disabled', true);
   params = bitstamp.submitRequest(bitstamp.methods.btcdepositaddress, function(response){
     $('#btcdeposit').prop('disabled', false);
-    if ('data' in response) {
-      hideError()
+    handleResponse(response, function(response){
       var satoshiValue = bitcoin.satoshiFromUserString($('#transferamount').val())
       bitcoin.sendMoney(response.data, satoshiValue, function(success, transactionId){
         if (success === true) {
           listUnconfirmedBitcoinTransactions(); // this is unlikely to show anything
         }
       });
-    } else {
-      displayError(response.error)
-    }
+    })
   });
 }
 
@@ -280,18 +272,13 @@ function cancelOrders() {
     if (parseInt(option.value) > 0) {
       console.log('Canceling order with id ' + option.value.toString());
 
-      params = bitstamp.submitRequest(bitstamp.methods.cancelorder, function(response) {
-        console.log(response);
-        if ('data' in response) {
-          hideError()
+      params = bitstamp.submitRequest(bitstamp.methods.cancelorder, {id: option.value}, function(response) {
+        handleResponse(response, function(response){
           refreshOpenOrders();
           refreshBalance();
           //refreshUserTransactions();
-        } else {
-          displayError(response.error)
-        }
-      }, {id: option.value});
-
+        })
+      });
     }
   });
 }
@@ -319,8 +306,7 @@ function doLogin(clientid, apikey, apisecret) {
 
   refreshBalance(function(response) {
     $('#loginmessage').hide();
-    if ('data' in response) {
-      hideError()
+    handleResponse(response, function(response){
       storeLoginDetails(bitstamp);
       $('#panel_login').hide();
       $('#panel_trade').show();
@@ -328,11 +314,10 @@ function doLogin(clientid, apikey, apisecret) {
       window.setTimeout(refreshUserTransactions, 1000);
       window.setTimeout(listPendingWithdrawalRequests, 200);
       window.setTimeout(listUnconfirmedBitcoinTransactions, 400);
-    } else {
-      displayError(response.error)
+    }, function(response){
       $('#panel_login').show();
       $('#panel_trade').hide();
-    }
+    })
   });
 }
 
@@ -367,23 +352,26 @@ function checkLogin() {
 
 function getTicker(response) {
   params = bitstamp.submitRequest(bitstamp.methods.ticker, function(response){
-    if ('data' in response) {
-      hideError()
+    handleResponse(response, function(response){
       $('.data_ticker_last').text(format_usd(response.data.last));
       $('.data_ticker_high').text(format_usd(response.data.high));
       $('.data_ticker_low').text(format_usd(response.data.low));
       $('.data_ticker_volume').text(format_volume(response.data.volume));
       // $('.data_ticker_bid').text(format_usd(response.data.bid));
       // $('.data_ticker_ask').text(format_usd(response.data.ask));
-    } else {
-      displayError(response.error)
-    }
+    })
   });
 }
 
-function displayError(error){
-  $('.alert').text(error || "Unknown error")
-  $('.alert').show()
+function handleResponse(response, successCallback, errorCallback) {
+  if ('data' in response) {
+    hideError()
+    successCallback(response)
+  } else {
+    $('.alert').text(response.error || "Unknown error")
+    $('.alert').show()
+    if(errorCallback) errorCallback(response)
+  }
 }
 
 function hideError(){

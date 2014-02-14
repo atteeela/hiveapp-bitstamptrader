@@ -129,8 +129,6 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
     }
   }
 
-  console.log('Submitting request');
-
   var that = this;
   this.requestFunction({
     type: bitstampmethod.method,
@@ -141,6 +139,8 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
     timeout: 30000,
     dataType: 'json'
   });
+
+  console.log('Submitting request with params', params);
 
   return params;
 }
