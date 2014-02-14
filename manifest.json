@@ -1,7 +1,7 @@
 {
   "name": "Bitstamp",
   "id": "com.hivewallet.bitstamptrader",
-  "version": "1.1",
+  "version": "1.2.0",
   "author": "Taylor Gerring",
   "description": "Hive Bitstamp app",
   "icon": "images/icon.png",
