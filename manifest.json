@@ -3,7 +3,7 @@
   "id": "com.hivewallet.bitstamptrader",
   "version": "1.2.0",
   "author": "Taylor Gerring",
-  "description": "Hive Bitstamp app",
+  "description": "Buy, sell and trade Bitcoin for USD, EUR and more.",
   "icon": "images/icon.png",
   "accessedHosts": ["www.bitstamp.net"]
 }
