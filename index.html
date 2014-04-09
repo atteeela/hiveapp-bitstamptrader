@@ -73,7 +73,7 @@
           <button id="submit_login" type="button" class="btn btn-default btn-sm form-control"><i class="fa fa-sign-in"></i> Login</button>
         </form>
 
-        <p id="loginmessage"><i class="fa fa-spinner fa-spin"></i> Credentials found. Now logging in&hellip;</p>
+        <p id="loginmessage"><i class="fa fa-spinner fa-spin"></i> Credentials found. Now logging in&hellip; <button type="button" class="btn btn-danger btn-xs button_logout"><i class="fa fa-sign-out fa-fw"></i>Logout</button></p>
         <span class="small">
           <a href="tutorial.html" title="Bitstamp Account API Access Tutorial">Need help getting your API credentials?</a>
         </span>
@@ -98,7 +98,7 @@
               <th>Account:</th>
               <td>
                 <span class="data_client_id"></span>
-                <button id="button_logout" type="button" class="btn btn-danger btn-xs"><i class="fa fa-sign-out fa-fw"></i>Logout</button>
+                <button type="button" class="btn btn-danger btn-xs"><i class="fa fa-sign-out fa-fw button_logout"></i>Logout</button>
               </td>
             </tr>
             <tr>
@@ -204,7 +204,7 @@
       // Event bindings
       $('#button_refreshall').click( function(){location.reload(false);} );
       $('#submit_login').click( function(){doLogin($('#clientid').val(), $('#apikey').val(), $('#apisecret').val());} );
-      $('#button_logout').click( doLogout );
+      $('.button_logout').click( doLogout );
       $('#orderbuy').click( function(){orderBuy($('#trade_amount').val(), $('#trade_price').val());} );
       $('#ordersell').click( function(){orderSell($('#trade_amount').val(), $('#trade_price').val());} );
       $('#btn_cancelorder').click( cancelOrders );
