@@ -139,17 +139,16 @@ function listPendingWithdrawalRequests() {
 
 function bitcoinWithdrawl(amount) {
   $('#btcwithdrawal').prop('disabled', true);
-  var user_address;
   bitcoin.getUserInfo(function(info){
-    user_address = info.address;
-  });
-  var additionalParams = {'amount': btcAmountFromInput(amount), 'address': user_address}
-  params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, additionalParams, function(response){
-    $('#btcwithdrawal').prop('disabled', false);
-    handleResponse(response, function(response){
-      refreshUserTransactions();
-      listPendingWithdrawalRequests();
-    })
+    var user_address = info.address;
+    var additionalParams = {'amount': btcAmountFromInput(amount), 'address': user_address}
+    params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, additionalParams, function(response){
+      $('#btcwithdrawal').prop('disabled', false);
+      handleResponse(response, function(response){
+        refreshUserTransactions();
+        listPendingWithdrawalRequests();
+      })
+    });
   });
 }
 
