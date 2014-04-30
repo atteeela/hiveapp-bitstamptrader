@@ -1,7 +1,7 @@
 {
   "name": "Bitstamp",
   "id": "com.hivewallet.bitstamptrader",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "author": "Taylor Gerring",
   "description": "Buy, sell and trade Bitcoin for USD, EUR and more.",
   "icon": "images/icon.png",

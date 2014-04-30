@@ -41,11 +41,6 @@ function format_number( number, format ){
   return result;
 }
 
-function format_usd_respect_user_denomination(number) {
-  number = bitcoin.satoshiFromUserString("1") / bitcoin.BTC_IN_SATOSHI * number
-  return format_usd(number)
-}
-
 function format_usd(number) {
   return format_number(number, '$0,0.00')
 }
@@ -139,17 +134,16 @@ function listPendingWithdrawalRequests() {
 
 function bitcoinWithdrawl(amount) {
   $('#btcwithdrawal').prop('disabled', true);
-  var user_address;
   bitcoin.getUserInfo(function(info){
-    user_address = info.address;
-  });
-  var additionalParams = {'amount': btcAmountFromInput(amount), 'address': user_address}
-  params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, additionalParams, function(response){
-    $('#btcwithdrawal').prop('disabled', false);
-    handleResponse(response, function(response){
-      refreshUserTransactions();
-      listPendingWithdrawalRequests();
-    })
+    var user_address = info.address;
+    var additionalParams = {'amount': btcAmountFromInput(amount), 'address': user_address}
+    params = bitstamp.submitRequest(bitstamp.methods.btcwithdrawal, additionalParams, function(response){
+      $('#btcwithdrawal').prop('disabled', false);
+      handleResponse(response, function(response){
+        refreshUserTransactions();
+        listPendingWithdrawalRequests();
+      })
+    });
   });
 }
 
@@ -293,9 +287,9 @@ function refreshBalance(callback) {
       $('.data_reserved_btc').text(format_btc_respect_user_denomination(response.data.btc_reserved));
       $('.unit').text(systemInfo.preferredBitcoinFormat);
 
-      $('.data_balance_usd').text(format_usd_respect_user_denomination(response.data.usd_balance));
-      $('.data_available_usd').text(format_usd_respect_user_denomination(response.data.usd_available));
-      $('.data_reserved_usd').text(format_usd_respect_user_denomination(response.data.usd_reserved));
+      $('.data_balance_usd').text(format_usd(response.data.usd_balance));
+      $('.data_available_usd').text(format_usd(response.data.usd_available));
+      $('.data_reserved_usd').text(format_usd(response.data.usd_reserved));
 
       callback(response);
   });
